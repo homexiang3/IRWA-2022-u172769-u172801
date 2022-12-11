@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+{% block page_title %}{{ page_title }}{% endblock %}
+
+{% block header %}
+    <!-- Next tag loads Charts.js https://www.chartjs.org/docs/latest/ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.2/chart.min.js"
+            integrity="sha512-tMabqarPtykgDtdtSqCL3uLVM0gS1ZkUAVhRFu1vSEFgvB73niFQWJuvviDyBGBH22Lcau4rHB5p2K2T0Xvr6Q=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}
+
+{% block content %}
+
+    <!--
+    Examples of what to show in Dashboard:
+
+    - Ranking of visited documents (from results page)
+    - Visitor's preferred browsers
+    - Visitor's city (from IP)
+    - preferred queries ranking
+    - preferred terms
+    - etc.
+
+    -->
+
+    <script>
+        // 'visited_docs' is the data coming from Python code.
+        // load the python list in the JS variable 'visits_list':
+        const visits_list = {{ visited_docs | tojson | safe }};
+		const queries = {{ queries | tojson | safe }}
+		const click_queries = {{click_queries| tojson | safe }}
+		const browsers = {{browsers| tojson | safe }}
+		const os = {{os| tojson | safe }}
+		const timeactivity = {{timeactivity| tojson | safe }}
+        console.log("visited docs: ")
+        console.log(visits_list)
+		console.log("queries: ")
+        console.log(queries)
+		console.log("click_queries: ")
+        console.log(click_queries)
+		console.log("browsers: ")
+        console.log(browsers)
+		console.log("os: ")
+        console.log(os)
+		console.log("timeactivity: ")
+        console.log(timeactivity)
+    </script>
+	<!-- visits graph -->
+    <h5>Ranking of Visited Documents</h5>
+    <canvas id="dailyVisits" width="200" height="200"></canvas>
+
+    <script>
+        // use JS map function top get just the tweet ids as labels
+        const visitsLabels1 = visits_list.map(a => "id: " + a.doc_id);
+        const visitsData1 = visits_list.map(a => a.counter);
+        const chartData1 = {
+            labels: visitsLabels1,
+            datasets: [{
+                label: 'Visits count',
+                // data: [65, 59, 80, 81, 56, 55, 40],
+                data: visitsData1,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+
+        const ctx1 = document.getElementById('dailyVisits').getContext('2d');
+
+        // This will render the chart
+        const myChart1 = new Chart(ctx1, {
+            type: 'line',
+            data: chartData1,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+    </script>
+
+    <hr>
+    <h5>Print Python data for verification with graph above...</h5>
+    {% for doc in visited_docs %}
+        <div class="pb-3">
+            <div class="">
+                <span class="text-dark"> ({{ doc.counter }} visits) </span> — id: {{ doc.doc_id }}
+                — {{ doc.description }}
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+	
+	<!-- queries graph -->
+	
+    <canvas id="queriesPlot" width="200" height="200"></canvas>
+	<!-- click_queries graph -->
+
+    <canvas id="clickqueriesPlot" width="200" height="200"></canvas>
+	<!-- browsers graph -->
+
+    <canvas id="browsersPlot" width="200" height="200"></canvas>
+	<!-- os graph -->
+
+    <canvas id="osPlot" width="200" height="200"></canvas>
+	<!-- timeactivity graph -->
+	
+    <canvas id="timeactivityPlot" width="200" height="200"></canvas>
+	
+    <script>
+        // use JS map function top get just the tweet ids as labels
+        const visitsLabels2 = Object.keys(queries);
+        const visitsData2 = Object.values(queries);
+        const chartData2 = {
+            labels: visitsLabels2,
+            datasets: [{
+                label: 'Visits count',
+                // data: [65, 59, 80, 81, 56, 55, 40],
+                data: visitsData2,
+                fill: false,
+				backgroundColor: "#0074D9",
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+
+        const ctx2 = document.getElementById('queriesPlot').getContext('2d');
+
+        // This will render the chart
+        const myChart2 = new Chart(ctx2, {
+            type: 'bar',
+            data: chartData2,
+            options: {
+                responsive: true,
+				plugins: {
+				  legend: {
+					position: 'top',
+				  },
+				  title: {
+					display: true,
+					text: 'queries Bar Chart'
+				  }
+				}
+            }
+        });
+
+    </script>
+	
+	<script>
+        // use JS map function top get just the tweet ids as labels
+        const visitsLabels3 = Object.keys(click_queries);
+        const visitsData3 = Object.values(click_queries);
+        const chartData3 = {
+            labels: visitsLabels3,
+            datasets: [{
+                label: 'Click per query',
+                // data: [65, 59, 80, 81, 56, 55, 40],
+                data: visitsData3,
+                fill: false,
+				backgroundColor: "#0074D9",
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+
+        const ctx3 = document.getElementById('clickqueriesPlot').getContext('2d');
+
+        // This will render the chart
+        const myChart3 = new Chart(ctx3, {
+            type: 'bar',
+            data: chartData3,
+            options: {
+                responsive: true,
+				plugins: {
+				  legend: {
+					position: 'top',
+				  },
+				  title: {
+					display: true,
+					text: 'click_queries Bar Chart'
+				  }
+				}
+            }
+        });
+
+    </script>
+	
+	<script>
+        // use JS map function top get just the tweet ids as labels
+        const visitsLabels4 = Object.keys(browsers);
+        const visitsData4 = Object.values(browsers);
+        const chartData4 = {
+            labels: visitsLabels4,
+            datasets: [{
+                label: 'Browsers count',
+                // data: [65, 59, 80, 81, 56, 55, 40],
+                data: visitsData4,
+                fill: false,
+				backgroundColor: ["#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF", "#B10DC9", "#FFDC00", "#001f3f", "#39CCCC", "#01FF70", "#85144b", "#F012BE", "#3D9970", "#111111", "#AAAAAA"],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+
+        const ctx4 = document.getElementById('browsersPlot').getContext('2d');
+
+        // This will render the chart
+        const myChart4 = new Chart(ctx4, {
+            type: 'pie',
+            data: chartData4,
+            options: {
+               responsive: true,
+				plugins: {
+				  legend: {
+					position: 'top',
+				  },
+				  title: {
+					display: true,
+					text: 'Browsers Pie Chart'
+				  }
+				}
+            }
+        });
+
+    </script>
+	
+	<script>
+        // use JS map function top get just the tweet ids as labels
+        const visitsLabels5 = Object.keys(os);
+        const visitsData5 = Object.values(os);
+        const chartData5 = {
+            labels: visitsLabels5,
+            datasets: [{
+                label: 'OS count',
+                // data: [65, 59, 80, 81, 56, 55, 40],
+                data: visitsData5,
+                fill: false,
+				backgroundColor: ["#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF", "#B10DC9", "#FFDC00", "#001f3f", "#39CCCC", "#01FF70", "#85144b", "#F012BE", "#3D9970", "#111111", "#AAAAAA"],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+
+        const ctx5 = document.getElementById('osPlot').getContext('2d');
+
+        // This will render the chart
+        const myChart5 = new Chart(ctx5, {
+            type: 'pie',
+            data: chartData5,
+            options: {
+                responsive: true,
+				plugins: {
+				  legend: {
+					position: 'top',
+				  },
+				  title: {
+					display: true,
+					text: 'OS Pie Chart'
+				  }
+				}
+            }
+        });
+
+    </script>
+	
+	<script>
+        // use JS map function top get just the tweet ids as labels
+        const visitsLabels6 = Object.keys(timeactivity);
+        const visitsData6 = Object.values(timeactivity);
+        const chartData6 = {
+            labels: visitsLabels6,
+            datasets: [{
+                label: 'Events count',
+                // data: [65, 59, 80, 81, 56, 55, 40],
+                data: visitsData6,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+
+        const ctx6 = document.getElementById('timeactivityPlot').getContext('2d');
+
+        // This will render the chart
+        const myChart6 = new Chart(ctx6, {
+            type: 'line',
+            data: chartData6,
+            options: {
+				responsive: true,
+				scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+				plugins: {
+				  title: {
+					display: true,
+					text: 'Timeactivity Chart'
+				  }
+				}
+            }
+        });
+
+    </script>
+
+{% endblock %}
+
+

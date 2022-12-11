@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+    {% if tweet is defined %}
+        <div class="pb-3">
+			<h5>Tweet {{tweet.id}} Details</h5>
+            <div class="doc-title">
+                <a href="{{ tweet.url }}">{{ tweet.title }}...
+                </a>
+            </div>
+            <div class="cited">
+                <img src="{{ url_for('static', filename='link.png') }}"  width="16px" alt="link icon"/><cite> <a href="{{ tweet.url }}">{{ tweet.url }}</a></cite>
+            </div>
+			<div>
+				<img src="{{ url_for('static', filename='calendar.png') }}" width="26px" alt="calendar icon"/> {{ tweet.doc_date }}
+			</div>
+            <div class="doc-desc">
+               {{ tweet.description }}
+            </div class="d-inline pl-3">
+				<img src="{{ url_for('static', filename='heart.png') }}" width="16px" alt="heart icon"/>  {{ tweet.likes}}
+			<div class="d-inline pl-3">
+				<img src="{{ url_for('static', filename='retweet.png') }}"  width="20px" alt="retweet icon"/>  {{ tweet.retweets}}
+			</div>
+			<div class="d-inline pl-3">
+				<img src="{{ url_for('static', filename='hashtag.png') }}"  width="16px" alt="hashtag icon"/>  {{ tweet.hashtags}}
+			</div>
+
+        </div>
+		<div class="d-inline"><a href="#" onclick="history.go(-1)">Go Back</a></div>
+		<div class="d-inline pl-3"><a href="#" onclick="history.go(-2)">Go Back 2 pages</a></div>
+		<div class="d-inline pl-3"><a href="#" onclick="history.go(-3)">Go Back 3 pages</a></div>
+		<div class="d-inline pl-3"><a href="#" onclick="history.go(-4)">Go Back 4 pages</a></div>
+		<div><a href="/stats" >Stats</a></div>
+		<div><a href="/dashboard" >Dashboard</a></div>
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+    <h2>Quick Stats</h2>
+    <h4>Clicked docs:</h4>
+
+    {% for doc in clicks_data %}
+        <div class="pb-3">
+            <div class="">
+                <span class="text-dark"> ({{ doc.count }} visits) </span> — id: {{ doc.id }} — {{ doc.description }}
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}

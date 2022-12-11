@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+    Found <strong>{{ found_counter }}</strong> results...
+    <hr>
+    {% for item in results_list %}
+        <div class="pb-3">
+            <div class="doc-title">
+                <a href="{{ item.url }}">{{ item.title }}...
+                </a>
+            </div>
+            <div class="cited">
+                <cite> <a href="{{ item.url }}">{{ item.url }}</a></cite>
+            </div>
+            <div class="doc-desc">
+                {{ item.doc_date }} — {{ item.description }}
+            </div>
+
+        </div>
+
+    {% endfor %}
+{% endblock %}
+

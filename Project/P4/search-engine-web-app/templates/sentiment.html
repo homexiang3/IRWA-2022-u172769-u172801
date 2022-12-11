@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title> NLTK Sentiments - IRWA Search Engine </title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/custom.css') }}">
+</head>
+<body>
+<div class="container">
+    <div class="centered">
+        <h1 class='header'> NLTK Sentiments </h1>
+        <p class='desc'>
+            Type a sentence, click on the submit button and wait for your prediction.
+        </p>
+        <form method="POST" onSubmit='return validate();' action="sentiment" class='form'>
+            <input name="text" class="search-text" autofocus="autofocus">
+            <input type="submit" onclick='this.form.submit();'>
+        </form>
+        <br>
+        <br>
+        {% if score is defined %}
+            {% if score > 0 %}
+                <div style="color: green;">
+                    <i class="far fa-5x fa-smile"></i>
+                </div>
+            {% elif score == 0 %}
+                <div style="color: grey;">
+                    <i class="far fa-5x fa-meh-blank"></i>
+                </div>
+            {% else %}
+                <div style="color: red;">
+                    <i class="far fa-5x fa-frown"></i>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>
